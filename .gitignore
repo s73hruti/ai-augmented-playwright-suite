@@ -1,2 +1,33 @@
 node_modules/
+dist/
+build/
+coverage/
+
+# Playwright
+test-results/
+playwright-report/
+playwright/.cache/
+blob-report/
+
+# Env / secrets
+.env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+npm-debug.log*
+
+# Editor
+.vscode/*
+!.vscode/extensions.json
+.idea/
+
+# OS
 .DS_Store
+Thumbs.db
+
+# AI-generated artifacts (kept out of VCS by default; commit intentionally if desired)
+tests/generated/*.spec.ts
+!tests/generated/.gitkeep
+reports/triage-output.json
