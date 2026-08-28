@@ -1,0 +1,25 @@
+{
+  "name": "ai-augmented-playwright-suite",
+  "version": "1.0.0",
+  "description": "LLM-augmented Playwright + TypeScript Page Object Model test framework: generates test specs from plain-English scenarios grounded in existing Page Objects, and auto-triages CI failures (flaky vs. real bug vs. selector drift) with structured JSON output.",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=18.18.0"
+  },
+  "scripts": {
+    "test": "echo \"no tests yet\""
+  },
+  "keywords": [
+    "playwright",
+    "typescript",
+    "page-object-model",
+    "test-automation",
+    "llm",
+    "claude",
+    "ci",
+    "flaky-test-detection"
+  ],
+  "author": "Shruti Shrivastava",
+  "license": "MIT"
+}
