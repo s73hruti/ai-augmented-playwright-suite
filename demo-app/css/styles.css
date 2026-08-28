@@ -1,0 +1,254 @@
+:root {
+  --brand: #d62828;
+  --brand-dark: #a11d1d;
+  --ink: #1b1b1b;
+  --muted: #6b6b6b;
+  --bg: #f7f5f2;
+  --card: #ffffff;
+  --border: #e2e0dc;
+  --success: #1e8e3e;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+}
+
+header.app-header {
+  background: var(--brand);
+  color: #fff;
+  padding: 16px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+header.app-header .brand {
+  font-weight: 700;
+  font-size: 1.25rem;
+  letter-spacing: 0.02em;
+}
+
+header.app-header .market-badge {
+  background: rgba(255, 255, 255, 0.18);
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+}
+
+main {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px;
+}
+
+.login-card {
+  max-width: 420px;
+  margin: 48px auto;
+}
+
+label {
+  display: block;
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin-bottom: 6px;
+  margin-top: 16px;
+}
+
+input, select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 1rem;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 12px 18px;
+}
+
+button.primary {
+  background: var(--brand);
+  color: #fff;
+  width: 100%;
+  margin-top: 24px;
+}
+
+button.primary:hover {
+  background: var(--brand-dark);
+}
+
+button.secondary {
+  background: #fff;
+  border: 1px solid var(--border);
+  color: var(--ink);
+}
+
+.error-message {
+  color: #b3261e;
+  font-size: 0.85rem;
+  margin-top: 8px;
+  min-height: 1em;
+}
+
+.daypart-banner {
+  background: #fff3e0;
+  border: 1px solid #ffcc80;
+  color: #8a5a00;
+  padding: 10px 16px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  font-size: 0.9rem;
+}
+
+.menu-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.menu-item {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.menu-item .item-name {
+  font-weight: 600;
+}
+
+.menu-item .item-price {
+  color: var(--muted);
+}
+
+.menu-item button {
+  background: var(--ink);
+  color: #fff;
+  margin-top: auto;
+}
+
+.combo-badge {
+  display: inline-block;
+  background: #ffe08a;
+  color: #6b4e00;
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 999px;
+  width: fit-content;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 24px;
+}
+
+@media (max-width: 720px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+.cart-panel {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px;
+  align-self: start;
+  position: sticky;
+  top: 24px;
+}
+
+.cart-line {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.9rem;
+}
+
+.cart-empty {
+  color: var(--muted);
+  font-size: 0.9rem;
+  padding: 12px 0;
+}
+
+.cart-total {
+  display: flex;
+  justify-content: space-between;
+  font-weight: 700;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 2px solid var(--ink);
+}
+
+.payment-options {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.payment-options label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.95rem;
+  color: var(--ink);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 12px;
+  cursor: pointer;
+}
+
+.payment-options input {
+  width: auto;
+}
+
+.confirmation-card {
+  text-align: center;
+  max-width: 480px;
+  margin: 48px auto;
+}
+
+.confirmation-card .checkmark {
+  color: var(--success);
+  font-size: 3rem;
+}
+
+.order-number {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 8px 0 16px;
+}
+
+footer.app-footer {
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.8rem;
+  padding: 24px;
+}
