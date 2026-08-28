@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>QuickBite POS — Menu</title>
+  <link rel="stylesheet" href="/css/styles.css" />
+</head>
+<body>
+  <header class="app-header">
+    <span class="brand">QuickBite POS</span>
+    <span class="market-badge" data-testid="market-badge">Market: <span id="market-label"></span></span>
+  </header>
+
+  <main>
+    <div id="daypart-banner" class="daypart-banner" data-testid="daypart-banner" hidden></div>
+    <h1 id="greeting" data-testid="greeting"></h1>
+
+    <div class="layout">
+      <div>
+        <div id="menu-grid" class="menu-grid" data-testid="menu-grid"></div>
+      </div>
+
+      <aside class="cart-panel">
+        <h2>Your Order</h2>
+        <div id="cart-lines" data-testid="cart-lines">
+          <div class="cart-empty" data-testid="cart-empty">No items yet — tap a menu item to add it.</div>
+        </div>
+        <div class="cart-total" data-testid="cart-total">
+          <span>Total</span>
+          <span id="cart-total-amount">$0.00</span>
+        </div>
+        <button class="primary" id="checkout-btn" data-testid="checkout-button" disabled>Checkout</button>
+      </aside>
+    </div>
+  </main>
+
+  <footer class="app-footer">QuickBite Kiosk/POS demo app — for the AI-Augmented Playwright Test Suite only.</footer>
+
+  <script src="/js/app.js"></script>
+  <script>
+    (async function init() {
+      QuickBite.requireSession();
+
+      const market = QuickBite.getMarket();
+      document.getElementById('market-label').textContent = market;
+
+      const menuData = await QuickBite.loadMenuData();
+      const marketData = menuData[market] || menuData.US;
+      const daypart = QuickBite.getDaypart();
+
+      document.getElementById('greeting').textContent = marketData.greeting;
+
+      const banner = document.getElementById('daypart-banner');
+      if (daypart === 'breakfast') {
+        banner.hidden = false;
+        banner.textContent = 'Breakfast menu is active until 11:00. Full menu resumes after.';
+      }
+
+      const items = marketData.items[daypart] || marketData.items.allday;
+      const comboEnabled = QuickBite.comboFlagEnabled();
+      const grid = document.getElementById('menu-grid');
+
+      items.forEach((item) => {
+        const card = document.createElement('div');
+        card.className = 'menu-item';
+        card.setAttribute('data-testid', `menu-item-${item.id}`);
+
+        const showCombo = comboEnabled && daypart === 'allday';
+
+        card.innerHTML = `
+          ${showCombo ? '<span class="combo-badge">Make it a combo</span>' : ''}
+          <span class="item-name">${item.name}</span>
+          <span class="item-price">${QuickBite.formatMoney(item.price, marketData.currency)}</span>
+          <button data-testid="add-item-${item.id}">Add to order</button>
+        `;
+
+        card.querySelector('button').addEventListener('click', () => {
+          QuickBite.addToCart(item);
+          renderCart(marketData.currency);
+        });
+
+        grid.appendChild(card);
+      });
+
+      function renderCart(currency) {
+        const cart = QuickBite.getCart();
+        const linesEl = document.getElementById('cart-lines');
+        const totalEl = document.getElementById('cart-total-amount');
+        const checkoutBtn = document.getElementById('checkout-btn');
+
+        if (cart.length === 0) {
+          linesEl.innerHTML = '<div class="cart-empty" data-testid="cart-empty">No items yet — tap a menu item to add it.</div>';
+          checkoutBtn.disabled = true;
+        } else {
+          linesEl.innerHTML = cart
+            .map(
+              (line) => `
+              <div class="cart-line" data-testid="cart-line-${line.id}">
+                <span>${line.qty} × ${line.name}</span>
+                <span>${QuickBite.formatMoney(line.price * line.qty, currency)}</span>
+              </div>`,
+            )
+            .join('');
+          checkoutBtn.disabled = false;
+        }
+
+        totalEl.textContent = QuickBite.formatMoney(QuickBite.cartTotal(cart), currency);
+      }
+
+      renderCart(marketData.currency);
+
+      document.getElementById('checkout-btn').addEventListener('click', () => {
+        window.location.href = `/checkout.html?market=${market}`;
+      });
+    })();
+  </script>
+</body>
+</html>
