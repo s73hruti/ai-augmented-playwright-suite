@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>QuickBite POS — Order Confirmed</title>
+  <link rel="stylesheet" href="/css/styles.css" />
+</head>
+<body>
+  <header class="app-header">
+    <span class="brand">QuickBite POS</span>
+    <span class="market-badge" data-testid="market-badge">Market: <span id="market-label"></span></span>
+  </header>
+
+  <main>
+    <div class="card confirmation-card">
+      <div class="checkmark">&#10003;</div>
+      <h1>Order Confirmed</h1>
+      <div class="order-number" data-testid="order-number" id="order-number"></div>
+      <p style="color: var(--muted)">Thank you for your order. Please proceed to the pickup counter.</p>
+      <button class="secondary" id="new-order-btn" data-testid="new-order-button">Start New Order</button>
+    </div>
+  </main>
+
+  <footer class="app-footer">QuickBite Kiosk/POS demo app — for the AI-Augmented Playwright Test Suite only.</footer>
+
+  <script src="/js/app.js"></script>
+  <script>
+    const market = QuickBite.getMarket();
+    document.getElementById('market-label').textContent = market;
+
+    const params = new URL(window.location.href).searchParams;
+    document.getElementById('order-number').textContent = params.get('order') || '';
+
+    document.getElementById('new-order-btn').addEventListener('click', () => {
+      window.location.href = `/menu.html?market=${market}`;
+    });
+  </script>
+</body>
+</html>

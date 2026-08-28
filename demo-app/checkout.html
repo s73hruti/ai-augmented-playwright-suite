@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>QuickBite POS — Checkout</title>
+  <link rel="stylesheet" href="/css/styles.css" />
+</head>
+<body>
+  <header class="app-header">
+    <span class="brand">QuickBite POS</span>
+    <span class="market-badge" data-testid="market-badge">Market: <span id="market-label"></span></span>
+  </header>
+
+  <main>
+    <h1>Checkout</h1>
+
+    <div class="card">
+      <h2>Order Summary</h2>
+      <div id="summary-lines" data-testid="summary-lines"></div>
+      <div class="cart-total" data-testid="checkout-total">
+        <span>Total</span>
+        <span id="summary-total">$0.00</span>
+      </div>
+
+      <label>Payment Method</label>
+      <div class="payment-options" data-testid="payment-options">
+        <label><input type="radio" name="payment" value="card" checked data-testid="payment-card" /> Credit / Debit Card</label>
+        <label><input type="radio" name="payment" value="cash" data-testid="payment-cash" /> Cash</label>
+        <label><input type="radio" name="payment" value="mobile" data-testid="payment-mobile" /> Mobile Wallet</label>
+      </div>
+
+      <button class="primary" id="place-order-btn" data-testid="place-order-button">Place Order</button>
+      <div class="error-message" id="checkout-error" data-testid="checkout-error"></div>
+    </div>
+  </main>
+
+  <footer class="app-footer">QuickBite Kiosk/POS demo app — for the AI-Augmented Playwright Test Suite only.</footer>
+
+  <script src="/js/app.js"></script>
+  <script>
+    (async function init() {
+      QuickBite.requireSession();
+      const market = QuickBite.getMarket();
+      document.getElementById('market-label').textContent = market;
+
+      const menuData = await QuickBite.loadMenuData();
+      const marketData = menuData[market] || menuData.US;
+      const cart = QuickBite.getCart();
+
+      if (cart.length === 0) {
+        window.location.href = `/menu.html?market=${market}`;
+        return;
+      }
+
+      const linesEl = document.getElementById('summary-lines');
+      linesEl.innerHTML = cart
+        .map(
+          (line) => `
+          <div class="cart-line" data-testid="summary-line-${line.id}">
+            <span>${line.qty} × ${line.name}</span>
+            <span>${QuickBite.formatMoney(line.price * line.qty, marketData.currency)}</span>
+          </div>`,
+        )
+        .join('');
+
+      document.getElementById('summary-total').textContent = QuickBite.formatMoney(
+        QuickBite.cartTotal(cart),
+        marketData.currency,
+      );
+
+      document.getElementById('place-order-btn').addEventListener('click', () => {
+        const paymentMethod = document.querySelector('input[name="payment"]:checked').value;
+        const currentCart = QuickBite.getCart();
+        if (currentCart.length === 0) {
+          document.getElementById('checkout-error').textContent = 'Your cart is empty.';
+          return;
+        }
+        const order = QuickBite.placeOrder(currentCart, paymentMethod);
+        window.location.href = `/confirmation.html?market=${market}&order=${order.orderNumber}`;
+      });
+    })();
+  </script>
+</body>
+</html>
