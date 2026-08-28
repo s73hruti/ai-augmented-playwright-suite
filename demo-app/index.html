@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>QuickBite POS — Attendant Login</title>
+  <link rel="stylesheet" href="/css/styles.css" />
+</head>
+<body>
+  <header class="app-header">
+    <span class="brand">QuickBite POS</span>
+    <span class="market-badge" data-testid="market-badge">Market: <span id="market-label">US</span></span>
+  </header>
+
+  <main>
+    <div class="card login-card">
+      <h1>Attendant Login</h1>
+      <p style="color: var(--muted)">Sign in to start a shift on this register.</p>
+
+      <label for="market-select">Market</label>
+      <select id="market-select" data-testid="market-select">
+        <option value="US">United States</option>
+        <option value="UK">United Kingdom</option>
+        <option value="DE">Germany</option>
+        <option value="PT">Portugal</option>
+        <option value="CA">Canada</option>
+      </select>
+
+      <label for="store-id">Store ID</label>
+      <input id="store-id" data-testid="store-id-input" type="text" placeholder="e.g. 4821" autocomplete="off" />
+
+      <label for="pin">PIN</label>
+      <input id="pin" data-testid="pin-input" type="password" inputmode="numeric" maxlength="4" placeholder="4-digit PIN" autocomplete="off" />
+
+      <div class="error-message" id="login-error" data-testid="login-error"></div>
+
+      <button class="primary" id="login-btn" data-testid="login-submit">Sign In</button>
+    </div>
+  </main>
+
+  <footer class="app-footer">QuickBite Kiosk/POS demo app — for the AI-Augmented Playwright Test Suite only.</footer>
+
+  <script src="/js/app.js"></script>
+  <script>
+    const marketSelect = document.getElementById('market-select');
+    const marketLabel = document.getElementById('market-label');
+    const initialMarket = QuickBite.getMarket();
+    marketSelect.value = initialMarket;
+    marketLabel.textContent = initialMarket;
+
+    marketSelect.addEventListener('change', () => {
+      QuickBite.setMarket(marketSelect.value);
+      marketLabel.textContent = marketSelect.value;
+    });
+
+    document.getElementById('login-btn').addEventListener('click', () => {
+      const storeId = document.getElementById('store-id').value.trim();
+      const pin = document.getElementById('pin').value.trim();
+      const result = QuickBite.login(storeId, pin);
+      const errorEl = document.getElementById('login-error');
+      if (!result.ok) {
+        errorEl.textContent = result.error;
+        return;
+      }
+      errorEl.textContent = '';
+      window.location.href = `/menu.html?market=${marketSelect.value}`;
+    });
+
+    // Allow Enter key to submit from either field.
+    ['store-id', 'pin'].forEach((id) => {
+      document.getElementById(id).addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') document.getElementById('login-btn').click();
+      });
+    });
+  </script>
+</body>
+</html>
