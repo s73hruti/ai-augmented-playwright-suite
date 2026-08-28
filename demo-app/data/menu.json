@@ -1,0 +1,92 @@
+{
+  "US": {
+    "currency": "$",
+    "locale": "en-US",
+    "greeting": "Welcome! What can we get started for you today?",
+    "items": {
+      "breakfast": [
+        { "id": "us-bf-01", "name": "Sunrise Breakfast Sandwich", "price": 4.29 },
+        { "id": "us-bf-02", "name": "Golden Hash Browns", "price": 2.19 },
+        { "id": "us-bf-03", "name": "Morning Roast Coffee", "price": 2.49 }
+      ],
+      "allday": [
+        { "id": "us-ad-01", "name": "Classic QuickBite Burger", "price": 5.79 },
+        { "id": "us-ad-02", "name": "Crispy Chicken Sandwich", "price": 6.29 },
+        { "id": "us-ad-03", "name": "Golden Fries", "price": 2.99 },
+        { "id": "us-ad-04", "name": "Fountain Drink", "price": 1.99 }
+      ]
+    }
+  },
+  "UK": {
+    "currency": "£",
+    "locale": "en-GB",
+    "greeting": "Welcome! What would you like to order today?",
+    "items": {
+      "breakfast": [
+        { "id": "uk-bf-01", "name": "Sunrise Bacon Roll", "price": 3.49 },
+        { "id": "uk-bf-02", "name": "Hash Browns", "price": 1.79 },
+        { "id": "uk-bf-03", "name": "Filter Coffee", "price": 2.09 }
+      ],
+      "allday": [
+        { "id": "uk-ad-01", "name": "Classic QuickBite Burger", "price": 4.99 },
+        { "id": "uk-ad-02", "name": "Crispy Chicken Sandwich", "price": 5.49 },
+        { "id": "uk-ad-03", "name": "Chips", "price": 2.49 },
+        { "id": "uk-ad-04", "name": "Fizzy Drink", "price": 1.69 }
+      ]
+    }
+  },
+  "DE": {
+    "currency": "€",
+    "locale": "de-DE",
+    "greeting": "Willkommen! Was dürfen wir für Sie zubereiten?",
+    "items": {
+      "breakfast": [
+        { "id": "de-bf-01", "name": "Sonnenaufgang Frühstücksbrötchen", "price": 3.79 },
+        { "id": "de-bf-02", "name": "Rösti", "price": 1.99 },
+        { "id": "de-bf-03", "name": "Filterkaffee", "price": 2.29 }
+      ],
+      "allday": [
+        { "id": "de-ad-01", "name": "Klassischer QuickBite Burger", "price": 5.49 },
+        { "id": "de-ad-02", "name": "Knuspriges Hähnchensandwich", "price": 5.99 },
+        { "id": "de-ad-03", "name": "Pommes", "price": 2.79 },
+        { "id": "de-ad-04", "name": "Erfrischungsgetränk", "price": 1.89 }
+      ]
+    }
+  },
+  "PT": {
+    "currency": "€",
+    "locale": "pt-PT",
+    "greeting": "Bem-vindo! O que podemos preparar para si hoje?",
+    "items": {
+      "breakfast": [
+        { "id": "pt-bf-01", "name": "Sandes de Pequeno-Almoço", "price": 2.99 },
+        { "id": "pt-bf-02", "name": "Batata Rösti", "price": 1.69 },
+        { "id": "pt-bf-03", "name": "Café Filtro", "price": 1.79 }
+      ],
+      "allday": [
+        { "id": "pt-ad-01", "name": "Hambúrguer Clássico QuickBite", "price": 4.49 },
+        { "id": "pt-ad-02", "name": "Sandes de Frango Crocante", "price": 4.99 },
+        { "id": "pt-ad-03", "name": "Batatas Fritas", "price": 2.19 },
+        { "id": "pt-ad-04", "name": "Refrigerante", "price": 1.59 }
+      ]
+    }
+  },
+  "CA": {
+    "currency": "$",
+    "locale": "en-CA",
+    "greeting": "Welcome! What can we get started for you today?",
+    "items": {
+      "breakfast": [
+        { "id": "ca-bf-01", "name": "Sunrise Breakfast Sandwich", "price": 4.49 },
+        { "id": "ca-bf-02", "name": "Golden Hash Browns", "price": 2.29 },
+        { "id": "ca-bf-03", "name": "Morning Roast Coffee", "price": 2.59 }
+      ],
+      "allday": [
+        { "id": "ca-ad-01", "name": "Classic QuickBite Burger", "price": 5.99 },
+        { "id": "ca-ad-02", "name": "Crispy Chicken Sandwich", "price": 6.49 },
+        { "id": "ca-ad-03", "name": "Golden Fries", "price": 3.19 },
+        { "id": "ca-ad-04", "name": "Fountain Drink", "price": 2.09 }
+      ]
+    }
+  }
+}
