@@ -31,3 +31,4 @@ Thumbs.db
 tests/generated/*.spec.ts
 !tests/generated/.gitkeep
 reports/triage-output.json
+reports/playwright-report.json
