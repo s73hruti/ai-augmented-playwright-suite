@@ -8,9 +8,7 @@ export type Daypart = 'breakfast' | 'allday';
 /**
  * Menu / ordering page for the QuickBite POS and Kiosk flow (demo-app/menu.html).
  *
- * Supports the market-specific menu configuration, daypart-driven UI, and
- * feature-flagged combo upsell described in the framework's real-world
- * counterpart (CyPost's Sesame/Kiosk screens).
+ * Supports the market-specific menu configuration
  */
 export class MenuPage extends BasePage {
   readonly path = '/menu.html';
