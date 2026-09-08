@@ -54,5 +54,13 @@ export default defineConfig({
       name: 'chromium-de',
       use: { ...devices['Desktop Chrome'], locale: 'de-DE' },
     },
+      {
+      name: 'chromium-pt',
+      use: { ...devices['Desktop Chrome'], locale: 'pt-PT' },
+    },
+      {
+      name: 'chromium-ca',
+      use: { ...devices['Desktop Chrome'], locale: 'en-CA' },
+    },
   ],
 });
