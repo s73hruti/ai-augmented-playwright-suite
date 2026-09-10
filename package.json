@@ -15,7 +15,8 @@
     "format": "prettier --write \"src/**/*.ts\" \"tests/**/*.ts\" \"scripts/**/*.ts\"",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
-    "index:pages": "tsx src/ai/pageObjectIndexer.ts"
+    "index:pages": "tsx src/ai/pageObjectIndexer.ts",
+    "generate:spec": "tsx src/cli/generate-spec.ts"
   },
   "keywords": [
     "playwright",

@@ -95,3 +95,207 @@ export function validateSpecAgainstGrounding(spec: TestSpec, pageObjects: PageOb
 
   return errors;
 }
+
+/**
+ * Deterministic, always-grounded mock spec used when running without a live
+ * Anthropic API key. It composes the standard login -> browse -> checkout ->
+ * confirmation flow using only real Page Object methods, while folding
+ * scenario keywords (market, payment method, item) into the arguments so the
+ * generated test still reflects what was asked for.
+ */
+function buildMockSpec(scenario: string, pageObjects: PageObjectDescriptor[]): TestSpec {
+  const lower = scenario.toLowerCase();
+
+  const market = detectMarket(lower);
+  const payment = lower.includes('cash') ? 'cash' : lower.includes('mobile') ? 'mobile' : 'card';
+  const daypart = lower.includes('breakfast') ? 'breakfast' : 'allday';
+  const itemId = daypart === 'breakfast' ? `${market.toLowerCase()}-bf-01` : `${market.toLowerCase()}-ad-01`;
+
+  const has = (className: string, method: string) =>
+    pageObjects.some((po) => po.className === className && po.methods.some((m) => m.name === method));
+
+  const steps: TestStep[] = [];
+
+  if (has('LoginPage', 'loginAs')) {
+    steps.push({
+      type: 'action',
+      pageObject: 'LoginPage',
+      method: 'loginAs',
+      args: ['4821', '1234', market],
+      comment: `Log in to the ${market} register as attendant of store 4821.`,
+    });
+  }
+
+  if (has('MenuPage', 'gotoForMarket')) {
+    steps.push({
+      type: 'action',
+      pageObject: 'MenuPage',
+      method: 'gotoForMarket',
+      args: [market, JSON.stringify({ daypart })],
+      comment: `Open the ${daypart} menu for market ${market}.`,
+    });
+  }
+
+  if (has('MenuPage', 'addItemToOrder')) {
+    steps.push({
+      type: 'action',
+      pageObject: 'MenuPage',
+      method: 'addItemToOrder',
+      args: [itemId],
+      comment: `Add item "${itemId}" to the order.`,
+    });
+  }
+
+  if (has('MenuPage', 'expectCheckoutEnabled')) {
+    steps.push({
+      type: 'assertion',
+      pageObject: 'MenuPage',
+      method: 'expectCheckoutEnabled',
+      args: [true],
+      comment: 'Checkout should be enabled once an item is in the cart.',
+    });
+  }
+
+  if (has('MenuPage', 'proceedToCheckout')) {
+    steps.push({
+      type: 'action',
+      pageObject: 'MenuPage',
+      method: 'proceedToCheckout',
+      args: [],
+      comment: 'Proceed from the menu to checkout.',
+    });
+  }
+
+  if (has('CheckoutPage', 'checkoutWith')) {
+    steps.push({
+      type: 'action',
+      pageObject: 'CheckoutPage',
+      method: 'checkoutWith',
+      args: [payment],
+      comment: `Complete checkout using ${payment} as the payment method.`,
+    });
+  }
+
+  if (has('ConfirmationPage', 'expectOrderNumberVisible')) {
+    steps.push({
+      type: 'assertion',
+      pageObject: 'ConfirmationPage',
+      method: 'expectOrderNumberVisible',
+      args: [],
+      comment: 'An order confirmation number should be displayed.',
+    });
+  }
+
+  const pageObjectsUsed = Array.from(new Set(steps.map((s) => s.pageObject)));
+
+  return {
+    title: `${market} ${daypart} order via ${payment} — ${truncate(scenario, 60)}`,
+    description: scenario.trim(),
+    tags: ['ai-generated', market.toLowerCase(), daypart, payment],
+    pageObjectsUsed,
+    steps,
+  };
+}
+
+/**
+ * Infers a market code from free-text scenario keywords. Checks whole-word
+ * market codes first (so "order" never matches "DE"), then falls back to
+ * common demonyms/country names.
+ */
+function detectMarket(lowerScenario: string): 'US' | 'UK' | 'DE' | 'PT' | 'CA' {
+  const codeMatch = (['UK', 'DE', 'PT', 'CA', 'US'] as const).find((m) =>
+    new RegExp(`\\b${m.toLowerCase()}\\b`).test(lowerScenario),
+  );
+  if (codeMatch) return codeMatch;
+
+  if (/german|germany/.test(lowerScenario)) return 'DE';
+  if (/british|united kingdom|britain/.test(lowerScenario)) return 'UK';
+  if (/portuguese|portugal/.test(lowerScenario)) return 'PT';
+  if (/canadian|canada/.test(lowerScenario)) return 'CA';
+  return 'US';
+}
+
+function truncate(text: string, max: number): string {
+  const trimmed = text.trim();
+  return trimmed.length > max ? `${trimmed.slice(0, max - 1)}…` : trimmed;
+}
+
+function slugify(title: string): string {
+  return title
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .slice(0, 80);
+}
+
+function instanceName(className: string): string {
+  return className.charAt(0).toLowerCase() + className.slice(1);
+}
+
+function renderArg(arg: string | number | boolean): string {
+  if (typeof arg === 'string') {
+    // Pass through pre-serialized JSON object literals (from buildMockSpec) verbatim;
+    // otherwise treat as a plain string literal.
+    const looksLikeJsonObject = arg.trim().startsWith('{') && arg.trim().endsWith('}');
+    return looksLikeJsonObject ? arg : JSON.stringify(arg);
+  }
+  return JSON.stringify(arg);
+}
+
+function renderSpecToTypeScript(
+  spec: TestSpec,
+  pageObjects: PageObjectDescriptor[],
+  outDirAbs: string,
+  scenario: string,
+): string {
+  const byClassName = new Map(pageObjects.map((po) => [po.className, po]));
+
+  const imports = spec.pageObjectsUsed
+    .map((className) => {
+      const descriptor = byClassName.get(className);
+      if (!descriptor) throw new Error(`Cannot render import for unknown Page Object "${className}"`);
+      const relDir = path.relative(outDirAbs, path.dirname(descriptor.filePath)) || '.';
+      const fileBase = path.basename(descriptor.filePath).replace(/\.ts$/, '.js');
+      const importPath = `${relDir.split(path.sep).join('/')}/${fileBase}`;
+      const normalized = importPath.startsWith('.') ? importPath : `./${importPath}`;
+      return `import { ${className} } from '${normalized}';`;
+    })
+    .join('\n');
+
+  const instantiations = spec.pageObjectsUsed
+    .map((className) => `  const ${instanceName(className)} = new ${className}(page);`)
+    .join('\n');
+
+  const stepLines = spec.steps
+    .map((step) => {
+      const varName = instanceName(step.pageObject);
+      const args = step.args.map(renderArg).join(', ');
+      const call = `await ${varName}.${step.method}(${args});`;
+      const escapedComment = step.comment.replace(/'/g, "\\'");
+      return `  await test.step('${escapedComment}', async () => {\n    ${call}\n  });`;
+    })
+    .join('\n\n');
+
+  // Playwright requires each tag to be prefixed with "@" (e.g. "@smoke").
+  const playwrightTags = spec.tags.map((t) => (t.startsWith('@') ? t : `@${t}`));
+  const tagsAnnotation =
+    playwrightTags.length > 0 ? `{ tag: [${playwrightTags.map((t) => `'${t}'`).join(', ')}] }, ` : '';
+
+  return `import { test, expect } from '@playwright/test';
+${imports}
+
+/**
+ * AI-GENERATED TEST — produced by \`npm run generate:spec\` from the plain-English
+ * scenario below. Regenerate rather than hand-editing where possible.
+ *
+ * Scenario: ${scenario.trim().replace(/\*\//g, '*\\/')}
+ * Generated: ${new Date().toISOString()}
+ */
+test('${spec.title.replace(/'/g, "\\'")}', ${tagsAnnotation}async ({ page }) => {
+  void expect; // available for ad hoc assertions if this file is hand-edited later
+${instantiations}
+
+${stepLines}
+});
+`;
+}
