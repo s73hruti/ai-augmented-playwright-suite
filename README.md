@@ -1,3 +1,5 @@
+[![CI](https://github.com/s73hruti/quickbite-playwright-suite/actions/workflows/ci.yml/badge.svg)](https://github.com/s73hruti/quickbite-playwright-suite/actions/workflows/ci.yml)
+
 # QuickBite Playwright Suite
 
 A Playwright + TypeScript end-to-end test framework built on the Page
