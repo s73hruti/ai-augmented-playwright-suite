@@ -13,7 +13,7 @@
     "lint": "eslint . --ext .ts",
     "lint:fix": "eslint . --ext .ts --fix",
     "format": "prettier --write \"src/**/*.ts\" \"tests/**/*.ts\" \"scripts/**/*.ts\"",
-    "test:e2e": "playwright test",
+    "test:e2e": "playwright test", "test:unit": "vitest run",
     "test:e2e:ui": "playwright test --ui"
   },
   "keywords": [

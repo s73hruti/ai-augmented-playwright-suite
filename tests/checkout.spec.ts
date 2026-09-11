@@ -3,6 +3,7 @@ import { LoginPage } from '../src/pages/login.page.js';
 import { MenuPage } from '../src/pages/menu.page.js';
 import { CheckoutPage } from '../src/pages/checkout.page.js';
 import { ConfirmationPage } from '../src/pages/confirmation.page.js';
+import { formatMoney } from '../src/utils/money.js';
 
 test.describe('End-to-end ordering flow', () => {
   test('US customer orders an all-day item and pays by card @smoke', async ({ page }) => {
@@ -19,12 +20,12 @@ test.describe('End-to-end ordering flow', () => {
       await menuPage.gotoForMarket('US', { daypart: 'allday' });
       await menuPage.expectDaypartBanner(false);
       await menuPage.addItemToOrder('us-ad-01');
-      await menuPage.expectCartTotal('$5.79');
+      await menuPage.expectCartTotal(formatMoney(5.79, '$'));
     });
 
     await test.step('check out with a credit card', async () => {
       await menuPage.proceedToCheckout();
-      await checkoutPage.expectTotal('$5.79');
+      await checkoutPage.expectTotal(formatMoney(5.79, '$'));
       await checkoutPage.checkoutWith('card');
     });
 
