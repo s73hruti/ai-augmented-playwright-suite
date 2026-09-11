@@ -1,7 +1,7 @@
 {
-  "name": "ai-augmented-playwright-suite",
+  "name": "quickbite-playwright-suite",
   "version": "1.0.0",
-  "description": "LLM-augmented Playwright + TypeScript Page Object Model test framework: generates test specs from plain-English scenarios grounded in existing Page Objects, and auto-triages CI failures (flaky vs. real bug vs. selector drift) with structured JSON output.",
+  "description": "Playwright + TypeScript end-to-end test framework built on the Page Object Model, testing a self-contained multi-market demo application.",
   "private": true,
   "type": "module",
   "engines": {
@@ -14,19 +14,14 @@
     "lint:fix": "eslint . --ext .ts --fix",
     "format": "prettier --write \"src/**/*.ts\" \"tests/**/*.ts\" \"scripts/**/*.ts\"",
     "test:e2e": "playwright test",
-    "test:e2e:ui": "playwright test --ui",
-    "index:pages": "tsx src/ai/pageObjectIndexer.ts",
-    "generate:spec": "tsx src/cli/generate-spec.ts"
+    "test:e2e:ui": "playwright test --ui"
   },
   "keywords": [
     "playwright",
     "typescript",
     "page-object-model",
     "test-automation",
-    "llm",
-    "claude",
-    "ci",
-    "flaky-test-detection"
+    "ci"
   ],
   "author": "Shruti Shrivastava",
   "license": "MIT",
@@ -42,13 +37,6 @@
     "typescript": "^5.5.4"
   },
   "dependencies": {
-    "@anthropic-ai/sdk": "^0.124.0",
-    "commander": "^14.0.3",
-    "dotenv": "^17.4.2",
-    "fast-glob": "^3.3.3",
-    "ts-morph": "^28.0.0",
-    "winston": "^3.19.0",
-    "zod": "3.23.8",
-    "zod-to-json-schema": "3.23.2"
+    "dotenv": "^17.4.2"
   }
 }
